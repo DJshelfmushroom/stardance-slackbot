@@ -16,19 +16,19 @@ app.command("/djb-ping", async({command, ack, respond}) => {
   await respond(`Pong! Latency: ${latency}ms`);
 });
 
-app.command("/dsb-catfact", async ({ ack, respond }) => {
+app.command("/djb-catfact", async ({ ack, respond }) => {
   await ack();
 
   try {
     const response = await axios.get("https://catfact.ninja/fact");
     await respond({text: `Cat Fact:\n${response.data.fact}`});
   } catch (err) {
-    console.log("Error in /dsb-catfact:\n" + err);
+    console.log("Error in /djb-catfact:\n" + err);
     await respond({text: `Failed to get a cat fact!`});
   }
 });
 
-app.command("/dsb-joke", async ({ ack, respond }) => {
+app.command("/djb-joke", async ({ ack, respond }) => {
   await ack();
 
   try {
@@ -40,19 +40,86 @@ app.command("/dsb-joke", async ({ ack, respond }) => {
 ${response.data.punchline}`
     });
   } catch (err) {
-    console.log("Error in /dsb-joke:\n" + err);
+    console.log("Error in /djb-joke:\n" + err);
     await respond({ text: "Failed to fetch a joke." });
   }
 });
 
+app.command("/djb-catimg", async ({ack, respond}) => {
+  await ack();
+  try {
+    let resp = await respond({text: "Working...", response_type: "ephemeral"});
+    console.log(resp.request);
+    const response = await axios.get("https://api.thecatapi.com/v1/images/search");
+    await respond(
+      {
+        "blocks": [
+          {
+            "type": "rich_text",
+            "elements": [
+              {
+                "type": "rich_text_section",
+                "elements": [
+                  {
+                    "type": "text",
+                    "text": "Here's your cat image:"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "image",
+            "image_url": response.data[0].url,
+            "alt_text": "cat"
+          }/*,
+          {
+          // Nothing here for now, maybe add some voting buttons later?
+            "type": "actions",
+            "elements": [
+              {
+                "type": "button",
+                "style": "primary",
+                "text": {
+                  "type": "plain_text",
+                  "text": "👍",
+                  "emoji": true
+                },
+                "value": "click_me_123",
+                "action_id": "actionId-0"
+              },
+              {
+                "type": "button",
+                "style": "danger",
+                "text": {
+                  "type": "plain_text",
+                  "text": "👎",
+                  "emoji": true
+                },
+                "value": "click_me_123",
+                "action_id": "actionId-1"
+              }
+            ]
+          }*/
+        ],
+        replace_original: true
+});
+  } catch (err) {
+    console.log("Error in /djb-catimg:\n" + err);
+    await respond({text: `Failed to get a cat image!`});
+  }
+});
 
-app.command("/dsb-help", async ({ ack, respond }) => {
+app.command("/djb-help", async ({ ack, respond }) => {
   await ack();
   await respond({
     text:
 `Available Commands:
-/dsb-ping - Check bot latency
-/dsb-catfact - Get a cat fact`
+/djb-ping - Check bot latency
+/djb-catimg - Get a random cat image
+/djb-catfact - Get a cat fact
+/djb-joke - Get a joke
+`
   });
 });
 
