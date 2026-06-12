@@ -250,6 +250,7 @@ app.command("/djb-help", async ({ ack, respond }) => {
   });
 });
 
+// #region subscription
 app.command("/djb-subscribe", async ({ ack, body, respond }) => {
   await ack();
   try {
@@ -286,9 +287,23 @@ app.view("schedule_modal_view", async ({ ack, view, body }) => {
 
   subscribers[body.user.id] = {
     interval: submittedValues['interval_select_action'],
+    number: submittedValues['number_input_action'],
     nextScheduledTime: timeToSchedule.toISOString(),
   };
   fs.writeFileSync('subscribers.json', JSON.stringify(subscribers, null, 2));
+});
+// #endregion
+
+app.command("/djb-unsubscribe", async ({ ack, body, respond }) => {
+  await ack();
+  console.log(body);
+  if(subscribers[body.user_id]){
+    delete subscribers[body.user_id];
+    fs.writeFileSync('subscribers.json', JSON.stringify(subscribers, null, 2));
+    await respond({text: "You have been unsubscribed from scheduled cat images.", response_type: "ephemeral"});
+  } else {
+    await respond({text: "You are not currently subscribed to scheduled cat images.", response_type: "ephemeral"});
+  }
 });
 
 (async () => {
@@ -324,12 +339,14 @@ app.view("schedule_modal_view", async ({ ack, view, body }) => {
           ]
         });
         const interval = subscribers[userID].interval;
+        const number = parseInt(subscribers[userID].number) || 1;
+
         if(interval === "minutes"){
-          scheduledTime.setMinutes(scheduledTime.getMinutes() + 1);
+          scheduledTime.setMinutes(scheduledTime.getMinutes() + number);
         } else if(interval === "hours"){
-          scheduledTime.setHours(scheduledTime.getHours() + 1);
+          scheduledTime.setHours(scheduledTime.getHours() + number);
         } else if(interval === "days"){
-          scheduledTime.setDate(scheduledTime.getDate() + 1);
+          scheduledTime.setDate(scheduledTime.getDate() + number);
         }
         subscribers[userID].nextScheduledTime = scheduledTime.toISOString();
         fs.writeFileSync('subscribers.json', JSON.stringify(subscribers, null, 2));
@@ -337,6 +354,7 @@ app.view("schedule_modal_view", async ({ ack, view, body }) => {
     }
   });
 })();
+
 
 function getOffsetBetweenTimezones(tz1, tz2, date = new Date()) {
   const getZoneUtcTimestamp = (timeZone) => {
