@@ -246,6 +246,7 @@ app.command("/djb-help", async ({ ack, respond }) => {
 /djb-catfact - Get a cat fact
 /djb-joke - Get a joke
 /djb-subscribe - Schedule recurring cat images
+/djb-unsubscribe - Cancel scheduled cat images
 `
   });
 });
