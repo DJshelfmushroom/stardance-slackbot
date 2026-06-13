@@ -4,7 +4,7 @@ Made for stardance, powered by cuteness
 
 ## Try it
 
-Join the [test workspace](https://join.slack.com/t/testworkspace-avo6491/shared_invite/zt-40rfwsboz-BlKCLdHDEgPhB3SiyYNXmQ) and run `/djb-help` in any channel.
+In the Hack Club slack workspace, join the [djb-testing](https://app.slack.com/client/E09V59WQY1E/C0BA48WFSKD) channel and run `/djb-help` for a list of commands, or see below.
 
 ## Commands
 
@@ -47,3 +47,13 @@ Here's a scheduled cat image, followed by me unsubscribing:
 ## How scheduling works
 
 A [node-cron](https://github.com/node-cron/node-cron) task fires every minute and compares the current time against each subscriber's `nextScheduledTime` (stored in `subscribers.json`). When they match, the bot DMs a cat image and advances the timestamp by the chosen interval. This keeps the bot dependency-free and (somewhat) restart-safe - the tradeoff is delivery resolution of one minute, which is plenty for cat pictures.
+
+## AI use disclosure
+
+Parts of this README were drafted with Claude Code, then reviewed and edited by hand. Claude code and Github Copilot were used for debugging and ideation, but all code is written by hand.
+
+## Credits
+
+- Built with [Bolt for JavaScript](https://slack.dev/bolt-js/)
+- Cat images: [The Cat API](https://thecatapi.com/) · Cat facts: [catfact.ninja](https://catfact.ninja/) · Jokes: [Official Joke API](https://github.com/15Dkatz/official_joke_api)
+- Made for [Hack Club Stardance](https://stardance.hackclub.com/)
